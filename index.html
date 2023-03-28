@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>vvv's TSC Latex Cipher Tool</title>
+		<link rel="icon" type="image/x-icon"  href="Whitelatex.ico"></link>
+		
+		<style>
+
+			@font-face {
+				font-family: "Roboto Mono";
+				src: url("RobotoMono.ttf");
+			}
+
+			body {
+				background-color:rgb(36,36,36);
+			}
+			* {
+				font-family: "Roboto Mono";
+				color: white;
+			}
+			.key {
+				height:40px;
+				width:40px;
+				font-size:14px;
+				background-color:rgb(55,55,55);
+				line-height: 1.1;
+				text-align:center;
+				margin: 3px;
+			}
+
+			.key.h {
+				display:none;
+			}
+			input[type="text"] {
+				background-color:rgb(55,55,55);
+			}
+			#keyboard breakline {
+				width:100%;
+			}
+			a {
+				color: rgb(99,99,255)
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>vvv's TSC Latex Cipher Tool</h1>
+		<h2>All this thing does is it takes original text and passes it through cipher which converts english letter set into TSC's Latex Language letter set.</h2>
+		<h3>credit to nikothegamer#5275 for the original idea. You can check their cipher tool <a href="https://nikothegamer100.github.io/latex-language-translator/">here</a></h3>
+		<h3>you can check <a href="https://github.com/vvv331/TSCLatexTranslator">the source-code here!</a></h3>
+		<h4>Uppercase letters are automatically lowercased because I don't think this language has uppercase letters.</h4>
+
+		<textarea id="LtoN" type="text" style="width: 450px; background-color:rgba(20,20,20,1)"></textarea>Latex -> Native <button onclick="LatexToNative()" style="background-color:rgb(66,66,66)">Translate</button>
+	</br>
+		<textarea id="NtoL" type="text" style="width: 450px; background-color:rgba(20,20,20,1)"></textarea>Native -> Latex <button onclick="NativeToLatex()" style="background-color:rgb(66,66,66)">Translate</button>
+		<h2>You can also use the keyboard below to write in cipher.</h2>
+		<div id="keyboard" style="display: flex; width: 48	0px; height:150px; background-color:rgba(77,77,77); flex-wrap: wrap">
+			<button class="key h" key="σ">a<br>σ</div>
+		</div>
+		<textarea id="keyboardResult" type="text" style="width: 450px; background-color:rgba(20,20,20,1)"></textarea>
+
+
+		<script>
+			let NtoLinput = document.getElementById("NtoL");
+			let LtoNinput = document.getElementById("LtoN");
+			let keyboard = document.getElementById("keyboard");
+			let keyboardKey = document.querySelector("button.key");
+			let keyboardResult = document.getElementById("keyboardResult");
+			let symbolList = {
+				q: "¶",
+				w: "w",
+				e: "ε",
+				r: "Ω",
+				t: "┼",
+				y: "¥",
+				u: "↨",
+				i: "∩",
+				o: "⌐",
+				p: "Æ",
+				a: "σ",
+				s: "Φ",
+				d: "₳",
+				f: "┘",
+				g: "Γ",
+				h: "μ",
+				j: "ſ",
+				k: "≡",
+				l: "Œ",
+				z: "√",
+				x: "⋛",
+				c: "Ǝ",
+				v: "‡",
+				b: "£",
+				n: "þ",
+				m: "ß"
+			}
+
+			let invertedList = {}
+			let LineBreak = ["p", "l"]; //this is used so we add a linebreak for keyboard.
+			for (key in symbolList) {
+				let translatedKey = symbolList[key] //converts original letter set into cipher.
+				invertedList[symbolList[key]] = key;
+
+				let clonedKey = keyboardKey.cloneNode(true);
+				clonedKey.className = "key";
+				clonedKey.innerHTML = key + "<br>" + symbolList[key];
+				clonedKey.addEventListener("click", () => {
+					inputLetter(translatedKey)
+				})
+				keyboard.appendChild(clonedKey);
+
+				if (LineBreak.find((value) => {return key === value})) {
+					let breakElement = document.createElement("breakline");
+					keyboard.appendChild(breakElement);
+				}
+			};
+
+			function NativeToLatex() {
+				let input = NtoLinput.value
+				if (typeof input === "string") { //ensure input is string to avoid errors
+					input = input.toLowerCase() //this cipher does not support uppercase letters, lowercase them.
+					let result = "";
+					for (letter of input) { //go letter by letter and check if such letter from cipher exists, otherwise, use regular letter
+						result += symbolList[letter] ? symbolList[letter] : letter;
+					};
+					NtoLinput.value = result
+				};
+			};
+			function LatexToNative() {
+				let input = LtoNinput.value
+				if (typeof input === "string") {
+					let result = "";
+					for (letter of input) {
+						result += invertedList[letter] ? invertedList[letter] : letter;
+					};
+					LtoNinput.value = result
+				};
+			};
+			function inputLetter(input) {
+				keyboardResult.value += input;
+			}
+		</script>
+	</body>
+</html>
